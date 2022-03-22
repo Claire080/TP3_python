@@ -1,3 +1,5 @@
+import webbrowser as wb
+
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -60,7 +62,9 @@ class MainWindow(QWidget):
                 self.label2.adjustSize()
                 self.show()
                 url2 = "http://www.openstreetmap.org/?mlat=%s&mlon=%s#map=12" % (res["Latitude"],res["Longitude"])
-                r2 = requests.get(url2)
+                wb.open_new_tab(url2)
+
+
 
 
     def __query(self, hostname,host,api):

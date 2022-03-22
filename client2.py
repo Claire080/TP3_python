@@ -21,7 +21,7 @@ class MainWindow(QWidget):
         self.setWindowTitle("Client")
         self.setFixedSize(400, 400)
 
-        self.label_0 = QLabel("Enter your host IP:", self)
+        self.label_0= QLabel("Enter your host IP:", self)
         self.text_0 = QLineEdit(self)
         self.text_0.move(10, 30)
 
@@ -36,10 +36,10 @@ class MainWindow(QWidget):
         self.text_2.move(10, 170)
 
         self.label2 = QLabel("Answer:", self)
-        self.label2.move(10, 270)
+        self.label2.move(10, 240)
 
         self.button = QPushButton("Send", self)
-        self.button.move(10, 300)
+        self.button.move(10, 270)
 
         self.button.clicked.connect(self.on_click)
         self.button.pressed.connect(self.on_click)
@@ -47,19 +47,25 @@ class MainWindow(QWidget):
         self.show()
 
     def on_click(self):
-        hostname = self.text.text()
+        host = self.text_0.text()
+        api=self.text_1.text()
+        hostname=self.text_2.text()
 
         if hostname == "":
             QMessageBox.about(self, "Error", "Please fill the field")
         else:
-            res = self.__query(hostname)
+            res = self.__query(hostname,host,api)
             if res:
-                self.label2.setText("Answer%s" % (res["Hello"]))
+                self.label2.setText("Answer %s %s" % (res["Latitude"],res["Longitude"]))
                 self.label2.adjustSize()
                 self.show()
+                url2 = "http://www.openstreetmap.org/?mlat=%s&mlon=%s#map=12" % (res["Latitude"],res["Longitude"])
+                r2 = requests.get(url2)
 
-    def __query(self, hostname):
-        url = "http://%s" % (hostname)
+
+    def __query(self, hostname,host,api):
+        #url = "http://%s" % (hostname)
+        url = "http://%s/ip/%s?key=%s" % (hostname,host,api)
         r = requests.get(url)
         if r.status_code == requests.codes.NOT_FOUND:
             QMessageBox.about(self, "Error", "IP not found")
